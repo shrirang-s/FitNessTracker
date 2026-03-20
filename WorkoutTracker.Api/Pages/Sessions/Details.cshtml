@@ -1,0 +1,74 @@
+@page
+@model WorkoutTracker.Api.Pages.Sessions.SessionDetailsModel
+@{
+    ViewData["Title"] = "Session Details";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-0">@Model.Session.Date.ToString("dddd, MMMM d yyyy")</h2>
+        @if (!string.IsNullOrEmpty(Model.Session.Notes))
+        {
+            <p class="text-muted mt-1">@Model.Session.Notes</p>
+        }
+    </div>
+    <a href="/Sessions" class="btn btn-outline-secondary">← Back</a>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @Model.ErrorMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <strong>Sets Logged</strong>
+        <a href="/Sets/Create?sessionId=@Model.Session.Id" class="btn btn-sm btn-dark">+ Add Set</a>
+    </div>
+    <div class="card-body p-0">
+        @if (!Model.Session.Sets.Any())
+        {
+            <p class="p-3 text-muted mb-0">No sets yet. Add your first set.</p>
+        }
+        else
+        {
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Set #</th>
+                        <th>Exercise</th>
+                        <th>Weight (kg)</th>
+                        <th>Reps</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var set in Model.Session.Sets)
+                    {
+                        <tr>
+                            <td>@set.SetNumber</td>
+                            <td>@set.ExerciseName</td>
+                            <td>@set.Weight</td>
+                            <td>@set.Reps</td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <a href="/Sets/Edit?setId=@set.Id&sessionId=@Model.Session.Id"
+                                       class="btn btn-sm btn-outline-dark py-0 px-2">Edit</a>
+                                    <form method="post" asp-page-handler="DeleteSet"
+                                          onsubmit="return confirm('Remove this set?')">
+                                        <input type="hidden" name="setId" value="@set.Id" />
+                                        <input type="hidden" name="SessionId" value="@Model.Session.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2">✕</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

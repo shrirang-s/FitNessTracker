@@ -1,0 +1,50 @@
+@page
+@model WorkoutTracker.Api.Pages.Sets.EditSetModel
+@{
+    ViewData["Title"] = "Edit Set";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <h2 class="mb-4">Edit Set</h2>
+
+        <form method="post">
+            <input type="hidden" asp-for="SetId" />
+            <input type="hidden" asp-for="SessionId" />
+
+            <div class="mb-3">
+                <label asp-for="Input.ExerciseId" class="form-label">Exercise</label>
+                <select asp-for="Input.ExerciseId" class="form-select">
+                    <option value="">— Select exercise —</option>
+                    @foreach (var ex in Model.Exercises)
+                    {
+                        <option value="@ex.Id">@ex.Name (@ex.MuscleGroup)</option>
+                    }
+                </select>
+            </div>
+
+            <div class="row">
+                <div class="col mb-3">
+                    <label asp-for="Input.SetNumber" class="form-label">Set #</label>
+                    <input asp-for="Input.SetNumber" type="number" class="form-control" min="1" />
+                </div>
+                <div class="col mb-3">
+                    <label asp-for="Input.Reps" class="form-label">Reps</label>
+                    <input asp-for="Input.Reps" type="number" class="form-control" min="1" />
+                </div>
+                <div class="col mb-3">
+                    <label asp-for="Input.Weight" class="form-label">Weight (kg)</label>
+                    <input asp-for="Input.Weight" type="number" class="form-control" min="0" step="0.5" />
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger">@Model.ErrorMessage</div>
+            }
+
+            <button type="submit" class="btn btn-dark">Save Changes</button>
+            <a href="/Sessions/Details?sessionId=@Model.SessionId" class="btn btn-outline-secondary ms-2">Cancel</a>
+        </form>
+    </div>
+</div>

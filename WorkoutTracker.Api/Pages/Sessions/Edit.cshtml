@@ -1,0 +1,33 @@
+@page
+@model WorkoutTracker.Api.Pages.Sessions.EditSessionModel
+@{
+    ViewData["Title"] = "Edit Session";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <h2 class="mb-4">Edit Session</h2>
+
+        <form method="post">
+            <input type="hidden" asp-for="SessionId" />
+
+            <div class="mb-3">
+                <label asp-for="Input.Date" class="form-label">Date</label>
+                <input asp-for="Input.Date" type="datetime-local" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.Notes" class="form-label">Notes <span class="text-muted">(optional)</span></label>
+                <textarea asp-for="Input.Notes" class="form-control" rows="3"></textarea>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger">@Model.ErrorMessage</div>
+            }
+
+            <button type="submit" class="btn btn-dark">Save Changes</button>
+            <a href="/Sessions" class="btn btn-outline-secondary ms-2">Cancel</a>
+        </form>
+    </div>
+</div>

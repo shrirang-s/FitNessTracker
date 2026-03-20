@@ -1,0 +1,28 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="row g-4 mt-2">
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">🏋️ Exercises</h5>
+                <p class="card-text text-muted">Manage your exercise library. Add new movements and browse by muscle group.</p>
+                <a href="/Exercises" class="btn btn-dark">View Exercises</a>
+                <a href="/Exercises/Create" class="btn btn-outline-dark ms-2">+ Add Exercise</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">📅 Workout Sessions</h5>
+                <p class="card-text text-muted">Log your gym sessions. Add sets, track weight and reps, and review your history.</p>
+                <a href="/Sessions" class="btn btn-dark">View Sessions</a>
+                <a href="/Sessions/Create" class="btn btn-outline-dark ms-2">+ New Session</a>
+            </div>
+        </div>
+    </div>
+</div>

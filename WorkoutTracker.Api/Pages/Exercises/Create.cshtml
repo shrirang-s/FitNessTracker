@@ -1,0 +1,39 @@
+@page
+@model WorkoutTracker.Api.Pages.Exercises.CreateExerciseModel
+@{
+    ViewData["Title"] = "Add Exercise";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <h2 class="mb-4">Add Exercise</h2>
+
+        <form method="post">
+            <div class="mb-3">
+                <label asp-for="Input.Name" class="form-label">Exercise Name</label>
+                <input asp-for="Input.Name" class="form-control" placeholder="e.g. Bench Press" />
+                <span asp-validation-for="Input.Name" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.MuscleGroup" class="form-label">Muscle Group</label>
+                <select asp-for="Input.MuscleGroup" class="form-select">
+                    <option value="">— Select muscle group —</option>
+                    @foreach (var group in Model.MuscleGroups)
+                    {
+                        <option value="@group">@group</option>
+                    }
+                </select>
+                <span asp-validation-for="Input.MuscleGroup" class="text-danger small"></span>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger">@Model.ErrorMessage</div>
+            }
+
+            <button type="submit" class="btn btn-dark">Save Exercise</button>
+            <a href="/Exercises" class="btn btn-outline-secondary ms-2">Cancel</a>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,38 @@
+@page
+@model WorkoutTracker.Api.Pages.Sessions.SessionsIndexModel
+@{
+    ViewData["Title"] = "Sessions";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Workout Sessions</h2>
+    <a href="/Sessions/Create" class="btn btn-dark">+ New Session</a>
+</div>
+
+@if (!Model.Sessions.Any())
+{
+    <div class="alert alert-secondary">No sessions yet. Start logging your workouts!</div>
+}
+else
+{
+    <div class="list-group">
+        @foreach (var session in Model.Sessions)
+        {
+            <div class="list-group-item">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>@session.Date.ToString("dddd, MMMM d yyyy")</strong>
+                        @if (!string.IsNullOrEmpty(session.Notes))
+                        {
+                            <p class="mb-0 text-muted small">@session.Notes</p>
+                        }
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="/Sessions/Details?sessionId=@session.Id" class="btn btn-sm btn-dark">View</a>
+                        <a href="/Sessions/Edit?sessionId=@session.Id" class="btn btn-sm btn-outline-dark">Edit</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

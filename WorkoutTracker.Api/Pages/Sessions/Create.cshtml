@@ -1,0 +1,26 @@
+@page
+@model WorkoutTracker.Api.Pages.Sessions.CreateSessionModel
+@{
+    ViewData["Title"] = "New Session";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <h2 class="mb-4">New Workout Session</h2>
+
+        <form method="post">
+            <div class="mb-3">
+                <label asp-for="Input.Date" class="form-label">Date</label>
+                <input asp-for="Input.Date" type="datetime-local" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.Notes" class="form-label">Notes <span class="text-muted">(optional)</span></label>
+                <textarea asp-for="Input.Notes" class="form-control" rows="3" placeholder="e.g. Push day, felt strong"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-dark">Create Session</button>
+            <a href="/Sessions" class="btn btn-outline-secondary ms-2">Cancel</a>
+        </form>
+    </div>
+</div>

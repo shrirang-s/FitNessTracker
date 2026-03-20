@@ -1,0 +1,21 @@
+# Build output
+bin/
+obj/
+
+# SQLite database (local data, not source code)
+*.db
+*.db-shm
+*.db-wal
+
+# User-specific files
+*.user
+.vs/
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+
+# NuGet
+*.nupkg
+nuget.config

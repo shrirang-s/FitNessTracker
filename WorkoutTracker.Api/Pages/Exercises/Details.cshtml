@@ -1,0 +1,105 @@
+@page
+@model WorkoutTracker.Api.Pages.Exercises.ExerciseDetailsModel
+@using WorkoutTracker.Api.Infrastructure
+@{
+    ViewData["Title"] = Model.Exercise.Name;
+}
+
+<div class="mb-3">
+    <a href="/Exercises" class="btn btn-outline-secondary btn-sm">← Back to Exercises</a>
+</div>
+
+<div class="row g-4">
+
+    <!-- Left column: muscle diagram + muscle group info -->
+    <div class="col-md-4">
+        <div class="card shadow-sm text-center">
+            <div class="card-body">
+                @if (Model.MuscleGroup != null)
+                {
+                    <img src="@Model.MuscleGroup.ImagePath"
+                         alt="@Model.Exercise.MuscleGroup muscle diagram"
+                         class="img-fluid mx-auto d-block mb-3"
+                         style="max-height: 260px;" />
+
+                    <h6 class="fw-bold text-uppercase text-muted small mb-2">Muscles Involved</h6>
+                    <ul class="list-unstyled mb-0">
+                        @foreach (var muscle in Model.MuscleGroup.MusclesInvolved)
+                        {
+                            <li class="mb-1">
+                                <span class="badge bg-danger bg-opacity-10 text-danger border border-danger-subtle">
+                                    @muscle
+                                </span>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-muted small">No diagram available for <strong>@Model.Exercise.MuscleGroup</strong>.</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Right column: exercise info -->
+    <div class="col-md-8">
+        <h2 class="mb-1">@Model.Exercise.Name</h2>
+        <span class="badge bg-secondary mb-3">@Model.Exercise.MuscleGroup</span>
+
+        @if (Model.ExerciseInfo != null)
+        {
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <h6 class="card-title text-muted text-uppercase small">About this Exercise</h6>
+                    <p class="mb-0">@Model.ExerciseInfo.Description</p>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <h6 class="card-title text-muted text-uppercase small">Coaching Tips</h6>
+                    <p class="mb-0">@Model.ExerciseInfo.Tips</p>
+                </div>
+            </div>
+
+            <div class="row g-2">
+                <div class="col-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h6 class="card-title text-muted text-uppercase small">Primary Muscle</h6>
+                            <p class="mb-0 fw-semibold text-danger">@Model.ExerciseInfo.PrimaryMuscle</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h6 class="card-title text-muted text-uppercase small">Secondary Muscles</h6>
+                            <p class="mb-0">@Model.ExerciseInfo.SecondaryMuscles</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <h6 class="card-title text-muted text-uppercase small">Muscle Group</h6>
+                    <p class="mb-0">@Model.Exercise.MuscleGroup</p>
+                    @if (Model.MuscleGroup != null)
+                    {
+                        <p class="mt-2 mb-0 text-muted">@Model.MuscleGroup.Description</p>
+                    }
+                </div>
+            </div>
+        }
+
+        <div class="mt-3">
+            <a href="/Exercises/History?exerciseId=@Model.Exercise.Id" class="btn btn-dark">
+                View Exercise History
+            </a>
+        </div>
+    </div>
+</div>

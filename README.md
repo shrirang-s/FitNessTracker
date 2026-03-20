@@ -116,28 +116,6 @@ POST   /api/workoutsessions/{id}/sets          Add set to session
 GET    /api/exercises/{id}/history             All sets logged for an exercise
 ```
 
----
-
-## Design Decisions
-
-**Why separate Repositories from Services?**
-Services contain *why* (business rules). Repositories contain *how* (SQL/EF). Swapping SQLite for Postgres only touches repositories.
-
-**Why DTOs instead of returning entities?**
-Entities are coupled to the DB schema. DTOs are the API contract. Adding a DB column doesn't accidentally expose it to clients.
-
-**Why interfaces on everything?**
-Enables dependency injection and unit testing — you can mock `IExerciseRepository` without hitting the DB.
-
-**Why SQLite?**
-Zero setup. Anyone can clone and run immediately. For production, swap the connection string and EF provider for Postgres or SQL Server — no other code changes needed.
-
-**Delete behaviour:**
-- Deleting a session cascades to its sets (they're meaningless without the session)
-- Deleting an exercise is restricted if it has logged sets (protects workout history)
-
----
-
 ## Muscle Group Images
 
 Exercise detail pages display public domain anatomy diagrams sourced from:

@@ -10,25 +10,20 @@ namespace WorkoutTracker.Api.Services
 {
     public class WorkoutSetService : IWorkoutSetService
     {
-        private readonly IWorkoutSetRepository _setRepo;
-        private readonly IWorkoutSessionRepository _sessionRepo;
+        private readonly IWorkoutSetRepository _repo;
+        private readonly IWorkoutSessionRepository _workoutSessionRepo;
         private readonly IExerciseRepository _exerciseRepo;
 
-        public WorkoutSetService(
-            IWorkoutSetRepository setRepo,
-            IWorkoutSessionRepository sessionRepo,
-            IExerciseRepository exerciseRepo)
+        public WorkoutSetService(IWorkoutSetRepository repo, IWorkoutSessionRepository workoutSessionRepo, IExerciseRepository exerciseRepo)
         {
-            _setRepo = setRepo;
-            _sessionRepo = sessionRepo;
+            _repo = repo;
+            _workoutSessionRepo = workoutSessionRepo;
             _exerciseRepo = exerciseRepo;
         }
 
         public async Task<WorkoutSetDto> GetByIdAsync(int id)
         {
-            var set = await _setRepo.GetByIdAsync(id);
-            if (set == null) return null;
-
+            var set = await _repo.GetByIdAsync(id);
             return new WorkoutSetDto
             {
                 Id = set.Id,
@@ -39,35 +34,26 @@ namespace WorkoutTracker.Api.Services
                 SetNumber = set.SetNumber
             };
         }
-
         public async Task<WorkoutSetDto> AddSetToSessionAsync(int sessionId, CreateWorkoutSetDto dto)
         {
-            // Validate session exists
-            var session = await _sessionRepo.GetByIdWithSetsAsync(sessionId);
+            var session = await _workoutSessionRepo.GetByIdWithSetsAsync(sessionId);
             if (session == null)
                 throw new KeyNotFoundException($"Session {sessionId} not found.");
 
-            // Validate exercise exists
             var exercise = await _exerciseRepo.GetByIdAsync(dto.ExerciseId);
             if (exercise == null)
                 throw new KeyNotFoundException($"Exercise {dto.ExerciseId} not found.");
 
-            if (dto.Reps <= 0)
-                throw new ArgumentException("Reps must be greater than 0.");
-
-            if (dto.Weight < 0)
-                throw new ArgumentException("Weight cannot be negative.");
-
-            var set = new WorkoutSet
+            var workoutSet = new WorkoutSet
             {
-                WorkoutSessionId = sessionId,
                 ExerciseId = dto.ExerciseId,
                 Weight = dto.Weight,
                 Reps = dto.Reps,
-                SetNumber = dto.SetNumber
+                SetNumber = dto.SetNumber,
+                WorkoutSessionId = sessionId
             };
 
-            var created = await _setRepo.AddAsync(set);
+            var created = await _repo.AddAsync(workoutSet);
 
             return new WorkoutSetDto
             {
@@ -78,53 +64,45 @@ namespace WorkoutTracker.Api.Services
                 Reps = created.Reps,
                 SetNumber = created.SetNumber
             };
+
         }
 
         public async Task<WorkoutSetDto> UpdateSetAsync(int setId, CreateWorkoutSetDto dto)
         {
-            var set = await _setRepo.GetByIdAsync(setId);
-            if (set == null)
-                throw new KeyNotFoundException($"Set {setId} not found.");
+            var fetchedSet = await _repo.GetByIdAsync(setId);
 
+            if (fetchedSet == null)
+            {
+                throw new KeyNotFoundException($"Set {setId} not found.");
+            }
             var exercise = await _exerciseRepo.GetByIdAsync(dto.ExerciseId);
             if (exercise == null)
                 throw new KeyNotFoundException($"Exercise {dto.ExerciseId} not found.");
 
-            if (dto.Reps <= 0)
-                throw new ArgumentException("Reps must be greater than 0.");
+            fetchedSet.ExerciseId = dto.ExerciseId;
+            fetchedSet.Weight = dto.Weight;
+            fetchedSet.Reps = dto.Reps;
+            fetchedSet.SetNumber = dto.SetNumber;
 
-            if (dto.Weight < 0)
-                throw new ArgumentException("Weight cannot be negative.");
-
-            set.ExerciseId = dto.ExerciseId;
-            set.Weight = dto.Weight;
-            set.Reps = dto.Reps;
-            set.SetNumber = dto.SetNumber;
-
-            var updated = await _setRepo.UpdateAsync(set);
-            return new WorkoutSetDto
-            {
-                Id = updated.Id,
-                ExerciseId = updated.ExerciseId,
-                ExerciseName = exercise.Name,
-                Weight = updated.Weight,
-                Reps = updated.Reps,
-                SetNumber = updated.SetNumber
-            };
+            var updated = await _repo.UpdateAsync(fetchedSet);
+            return new WorkoutSetDto { Id = updated.Id, ExerciseId = updated.ExerciseId, ExerciseName = exercise.Name, Weight = updated.Weight, Reps = updated.Reps, SetNumber = updated.SetNumber };
         }
 
         public async Task DeleteSetAsync(int setId)
         {
-            var set = await _setRepo.GetByIdAsync(setId);
-            if (set == null)
-                throw new KeyNotFoundException($"Set {setId} not found.");
+            var fetchedSet = await _repo.GetByIdAsync(setId);
 
-            await _setRepo.DeleteAsync(set);
+            if (fetchedSet == null)
+            {
+                throw new KeyNotFoundException($"Set {setId} not found.");
+            }
+
+            await _repo.DeleteAsync(fetchedSet);
         }
 
         public async Task<IEnumerable<WorkoutSetDto>> GetExerciseHistoryAsync(int exerciseId)
         {
-            var sets = await _setRepo.GetByExerciseIdAsync(exerciseId);
+            var sets = await _repo.GetByExerciseIdAsync(exerciseId);
             return sets.Select(ws => new WorkoutSetDto
             {
                 Id = ws.Id,
@@ -133,6 +111,20 @@ namespace WorkoutTracker.Api.Services
                 Weight = ws.Weight,
                 Reps = ws.Reps,
                 SetNumber = ws.SetNumber
+            });
+        }
+
+        public async Task<IEnumerable<PersonalRecordDto>> GetAllPersonalRecords()
+        {
+            var records = await _repo.GetAllPersonalRecordsAsync();
+
+            return records.Select(record =>
+            new PersonalRecordDto {
+                ExerciseId = record.ExerciseId,
+                Weight = record.Weight,
+                Reps = record.Reps,
+                ExerciseName = record.ExerciseName,
+                Date = record.Date
             });
         }
     }

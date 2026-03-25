@@ -11,5 +11,6 @@ namespace WorkoutTracker.Api.Services
         Task<WorkoutSetDto> UpdateSetAsync(int setId, CreateWorkoutSetDto dto);
         Task DeleteSetAsync(int setId);
         Task<IEnumerable<WorkoutSetDto>> GetExerciseHistoryAsync(int exerciseId);
+        Task<IEnumerable<PersonalRecordDto>> GetAllPersonalRecords();
     }
 }

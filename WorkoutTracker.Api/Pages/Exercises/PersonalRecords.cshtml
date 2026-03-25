@@ -1,0 +1,41 @@
+@page
+@model WorkoutTracker.Api.Pages.Exercises.PersonalRecordsModel
+@{
+    ViewData["Title"] = "Personal Records";
+}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <strong>Personal Records</strong>
+    </div>
+    <div class="card-body p-0">
+        @if (!Model.Records.Any())
+        {
+            <p class="p-3 text-muted mb-0">No Personal Records Yet</p>
+        }
+        else
+        {
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Exercise Name</th>
+                        <th>Weight (kg)</th>
+                        <th>Reps</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var record in Model.Records)
+                    {
+                        <tr>
+                            <td>@record.ExerciseName</td>
+                            <td>@record.Weight</td>
+                            <td>@record.Reps</td>
+                            <td>@record.Date</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

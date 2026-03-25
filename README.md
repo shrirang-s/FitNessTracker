@@ -64,6 +64,11 @@ POST /api/workoutsessions/{id}/sets
 - Edit any logged set
 - Delete sets from a session
 
+### Personal Records
+- View the best set ever logged for each exercise
+- Ranked by heaviest weight, tiebroken by most reps
+- Accessible at `/Exercises/PersonalRecords`
+
 ---
 
 ## Getting Started
@@ -115,6 +120,20 @@ POST   /api/workoutsessions/{id}/sets          Add set to session
 
 GET    /api/exercises/{id}/history             All sets logged for an exercise
 ```
+
+## Testing
+
+Unit tests are in `WorkoutTracker.Tests/` using xUnit and Moq.
+
+```bash
+dotnet test
+```
+
+### Test coverage
+- `WorkoutSetService.AddSetToSessionAsync` — happy path, session not found, exercise not found
+- `ExerciseInfoProvider` — known muscle group mapping, unknown group returns null
+
+---
 
 ## Muscle Group Images
 

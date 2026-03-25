@@ -64,6 +64,16 @@ namespace WorkoutTracker.Tests
             await Assert.ThrowsAsync<KeyNotFoundException>(() =>
                 service.AddSetToSessionAsync(1, new CreateWorkoutSetDto { ExerciseId = 99, Weight = 50, Reps = 5, SetNumber = 1 }));
         }
+
+        [Fact]
+        public async Task DeleteSetAsync_SetNotFound_ThrowsKeyNotFoundException()
+        {
+            _setRepo.Setup(r => r.GetByIdAsync(99)).ReturnsAsync((WorkoutSet)null);
+            var service = CreateService();
+
+            await Assert.ThrowsAsync<KeyNotFoundException>(() =>
+                service.DeleteSetAsync(99));
+        }
     }
 
     public class ExerciseInfoProviderTests
